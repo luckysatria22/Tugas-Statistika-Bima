@@ -1,53 +1,48 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# 1. Muat dataset
-df = pd.read_csv('transaksi_elektronikprima.csv')
+# 1. Muat dataset transaksi Elektronik Prima
+df = pd.read_csv('transaksi_elektronikprima_2.csv')
 
-# --- 5 Baris Pertama & Tabel Frekuensi ---
-print("--- 5 Baris Pertama ---")
-print(df.head())
+# ==========================================
+# LATIHAN 1: Bar Chart Total Penjualan per Kategori (Khusus Cabang Surabaya)
+# ==========================================
+print("--- HASIL LATIHAN 1 ---")
+surabaya_df = df[df['cabang'] == 'Surabaya']
+latihan_1_result = surabaya_df.groupby('kategori_produk')['total_penjualan'].sum().sort_values(ascending=False)
+print(latihan_1_result)
 
-print("\n--- Tabel Frekuensi Cabang ---")
-print(df['cabang'].value_counts())
-
-print("\n--- Tabulasi Silang Cabang x Kategori ---")
-print(pd.crosstab(df['cabang'], df['kategori_produk']))
-
-# --- LANGKAH 3: Bar Chart ---
-df.groupby('cabang')['total_penjualan'].sum().sort_values(ascending=False).plot(
-    kind='bar', title='Total Penjualan per Cabang')
+# Membuat Bar Chart Latihan 1
+latihan_1_result.plot(kind='bar', title='Total Penjualan per Kategori - Cabang Surabaya', color='teal')
 plt.ylabel('Total Penjualan (Rp)')
+plt.xlabel('Kategori Produk')
 plt.tight_layout()
-plt.show()  # Akan memunculkan jendela grafik pertama
+plt.show() # Screenshot grafik ini untuk Latihan 1
 
-df.groupby('kategori_produk')['total_penjualan'].sum().sort_values(ascending=False).plot(
-    kind='bar', title='Total Penjualan per Kategori Produk')
-plt.ylabel('Total Penjualan (Rp)')
-plt.tight_layout()
-plt.show()  # Akan memunculkan jendela grafik kedua
 
-# --- LANGKAH 4: Pie Chart ---
-df['metode_pembayaran'].value_counts().plot(
-    kind='pie', autopct='%1.1f%%', title='Proporsi Metode Pembayaran')
-plt.ylabel('')
-plt.tight_layout()
-plt.show()  # Akan memunculkan jendela grafik ketiga
+# ==========================================
+# LATIHAN 2: Distribusi Frekuensi Bergolong Usia Pelanggan
+# ==========================================
+print("\n--- HASIL LATIHAN 2 ---")
+bins = [0, 20, 40, 60, 80]
+labels = ['0-20', '20-40', '40-60', '60-80']
+df['kelompok_usia'] = pd.cut(df['usia_pelanggan'], bins=bins, labels=labels, right=False)
 
-# --- LANGKAH 5: Histogram ---
-df['harga_satuan'].plot(kind='hist', bins=8, edgecolor='white',
-                        title='Sebaran Harga Satuan Produk')
+latihan_2_result = df['kelompok_usia'].value_counts().sort_index()
+print(latihan_2_result)
+
+
+# ==========================================
+# LATIHAN 3: Histogram Harga Satuan Khusus Smartphone
+# ==========================================
+print("\n--- HASIL LATIHAN 3 ---")
+smartphone_df = df[df['kategori_produk'] == 'Smartphone']
+print(smartphone_df['harga_satuan'].describe())
+
+# Membuat Histogram Latihan 3
+smartphone_df['harga_satuan'].plot(kind='hist', bins=6, edgecolor='white', color='orange',
+                                    title='Sebaran Harga Satuan - Khusus Smartphone')
 plt.xlabel('Harga Satuan (Rp)')
+plt.ylabel('Frekuensi')
 plt.tight_layout()
-plt.show()  # Akan memunculkan jendela grafik keempat
-
-# --- LANGKAH 6: Line Chart ---
-df['tanggal'] = pd.to_datetime(df['tanggal'])
-df['bulan'] = df['tanggal'].dt.to_period('M')
-
-df.groupby('bulan')['total_penjualan'].sum().plot(
-    kind='line', marker='o', title='Tren Total Penjualan per Bulan')
-plt.ylabel('Total Penjualan (Rp)')
-plt.xlabel('Bulan')
-plt.tight_layout()
-plt.show()  # Akan memunculkan jendela grafik kelima
+plt.show() # Screenshot grafik ini untuk Latihan 3
