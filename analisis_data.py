@@ -1,4 +1,4 @@
-import pandas as pd
+import pandas as pd  # type: ignore[import-not-found]
 import matplotlib.pyplot as plt
 
 # 1. Muat dataset transaksi Elektronik Prima
